@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+      "module": "Node16",
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "target": "ES2020",
+      "noImplicitAny": true,
+      "strictBindCallApply": true,
+      "moduleResolution": "Node16",
+      "sourceMap": true,
+      "outDir": "dist",
+      "baseUrl": ".",
+      "paths": {
+          "src/*": [
+              "src/*",
+          ]
+      }
+  },
+  "include": ["./src/**/*.ts"]
+}
