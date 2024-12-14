@@ -6,8 +6,10 @@ import SubscriptionService from '../../services/SubscriptionService';
 import { generateSubscriptionMessage } from '../methods/subscription';
 import { UserSubscriptionData } from '../../database/models/subscription';
 import { Types } from 'mongoose';
+import logger from '../../utils/logger';
 
 const onUserSubscriptionEnd = async (ctx: Context, userId: Types.ObjectId, subscriptionData: UserSubscriptionData) => {
+  logger.info(`Adding subscription for user ${userId}`, subscriptionData);
   ctx.reply(generateSubscriptionMessage(subscriptionData));
   SubscriptionService.subscribe(userId, subscriptionData);
   UserService.resetUserState(ctx.from.id);
@@ -15,6 +17,7 @@ const onUserSubscriptionEnd = async (ctx: Context, userId: Types.ObjectId, subsc
 
 const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
   bot.command('start', async (ctx) => {
+    logger.info(`User ${ctx.from.id} started the bot`);
     ctx.reply(`
       ברוכים הבאים לבוט חיפוש דירות של Yad2
       ניתן להפעיל את הבוט על ידי הקלדת הפקודות הבאות:
@@ -23,6 +26,7 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
   });
 
   bot.command('create_subscription', async (ctx) => {
+    logger.info(`User ${ctx.from.id} initiated a new subscription`);
     await UserService.resetUserState(ctx.from.id);
     ctx.reply('הקלד את שם העיר/שכונה לחיפוש:');
   });
@@ -30,6 +34,7 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
   bot.hears(/.*/, async (ctx) => {
     const user = await UserService.getUser(ctx.from.id);
     const step = user.state.step;
+    logger.info(`User ${ctx.from.id} is on step ${step}`);
 
     switch (step) {
       case 'location':
@@ -37,6 +42,7 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
         try {
           validateCityName(city);
         } catch (error) {
+          logger.error(`Validation error for city name: ${error.message}`);
           ctx.reply(error.message);
           return;
         }
@@ -44,6 +50,7 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
         // TODO: Add multi-city support
         const res = await Yad2ApiService.fetchCityOptions(ctx.message.text);
         if (res.length === 0) {
+          logger.warn(`No results found for city: ${city}`);
           ctx.reply('לא נמצאו תוצאות, נסה שוב');
           return;
         }
@@ -63,6 +70,7 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
           }
           validatePrice(minPrice);
         } catch (error) {
+          logger.error(`Validation error for min price: ${error.message}`);
           ctx.reply(error.message);
           return;
         }
@@ -78,6 +86,7 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
           }
           validatePrice(maxPrice, user.state.activeSubscriptionData.minPrice);
         } catch (error) {
+          logger.error(`Validation error for max price: ${error.message}`);
           ctx.reply(error.message);
           return;
         }
@@ -98,6 +107,7 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
           }
           rooms.forEach(room => validateRooms(room));
         } catch (error) {
+          logger.error(`Validation error for rooms: ${error.message}`);
           ctx.reply(error.message);
           return;
         }
@@ -120,6 +130,7 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
           }
           validateSizeInMeter(minSizeInMeter);
         } catch (error) {
+          logger.error(`Validation error for min size: ${error.message}`);
           ctx.reply(error.message);
           return;
         }
@@ -135,12 +146,14 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
           }
           validateSizeInMeter(maxSizeInMeter, user.state.activeSubscriptionData.minSizeInMeter);
         } catch (error) {
+          logger.error(`Validation error for max size: ${error.message}`);
           ctx.reply(error.message);
           return;
         }
         onUserSubscriptionEnd(ctx, user._id, { ...user.state.activeSubscriptionData, maxSizeInMeter });
         break;
       default:
+        logger.warn(`Unknown step: ${step} for user ${ctx.from.id}`);
         ctx.reply('לא ניתן להבין את הבקשה, נסה שוב');
         break;
     }
