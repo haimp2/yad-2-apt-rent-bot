@@ -43,6 +43,10 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
 
         // TODO: Add multi-city support
         const res = await Yad2ApiService.fetchCityOptions(ctx.message.text);
+        if (res.length === 0) {
+          ctx.reply('לא נמצאו תוצאות, נסה שוב');
+          return;
+        }
         UserService.setCurrentLocations(ctx.from.id, res);
 
         ctx.reply(
