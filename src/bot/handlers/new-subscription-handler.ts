@@ -10,7 +10,7 @@ import logger from '../../utils/logger';
 
 const onUserSubscriptionEnd = async (ctx: Context, userId: Types.ObjectId, subscriptionData: UserSubscriptionData) => {
   logger.info(`Adding subscription for user ${userId}`, subscriptionData);
-  ctx.reply(generateSubscriptionMessage(subscriptionData));
+  ctx.reply(generateSubscriptionMessage(subscriptionData), { parse_mode: 'MarkdownV2' });
   SubscriptionService.subscribe(userId, subscriptionData);
   UserService.resetUserState(ctx.from.id);
 };
