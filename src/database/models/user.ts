@@ -1,15 +1,9 @@
 import { Schema, model } from 'mongoose';
+import { locationSchema, subscriptionDataSchema } from './subscription';
 
-export interface UserStateData {
-    city?: string;
-    neighborhood?: string;
-    minPrice?: number;
-    maxPrice?: number;
-    minSizeInMeter?: number;
-    maxSizeInMeter?: number;
-    minRooms?: number;
-    maxRooms?: number;
-}
+export const userStateSteps = ['start', 'location', 'minPrice', 'maxPrice', 'rooms', 'minSizeInMeter', 'maxSizeInMeter'] as const;
+
+export type UserStateStep = typeof userStateSteps[number];
 
 const userSchema = new Schema({
     chatId: {
@@ -20,13 +14,18 @@ const userSchema = new Schema({
     state: {
         step: {
             type: String,
-            enum: ['start', 'city', 'neighborhood', 'minPrice', 'maxPrice', 'minSizeInMeter', 'maxSizeInMeter', 'minRooms', 'maxRooms'],
+            enum: userStateSteps,
             default: null
         },
-        data: {
-            type: Object,
+        activeSubscriptionData: {
+            type: subscriptionDataSchema,
             default: {},
-        }
+        },
+        currentLocations: [{
+            ...locationSchema,
+            id: { type: Number, required: true }
+        }],
+        default: [],
     },
     maxSubscriptions: {
         type: Number,
