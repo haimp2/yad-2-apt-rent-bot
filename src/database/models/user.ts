@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 import { locationSchema, subscriptionDataSchema } from './subscription';
 
-export const userStateSteps = ['start', 'location', 'minPrice', 'maxPrice', 'rooms', 'minSizeInMeter', 'maxSizeInMeter'] as const;
+export const userStateSteps = ['start', 'location', 'minPrice', 'maxPrice', 'minRooms', 'maxRooms', 'minSizeInMeter', 'maxSizeInMeter'] as const;
 
 export type UserStateStep = typeof userStateSteps[number];
 

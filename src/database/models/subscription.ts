@@ -7,7 +7,8 @@ export interface UserSubscriptionData {
     location?: Location;
     minPrice?: number;
     maxPrice?: number;
-    rooms?: number[];
+    minRooms?: number;
+    maxRooms?: number;
     minSizeInMeter?: number;
     maxSizeInMeter?: number;
 }
@@ -26,7 +27,8 @@ export const subscriptionDataSchema = {
     },
     minPrice: { type: Number },
     maxPrice: { type: Number },
-    rooms: { type: [Number] },
+    minRooms: { type: Number },
+    maxRooms: { type: Number },
     minSizeInMeter: { type: Number },
     maxSizeInMeter: { type: Number },
 }

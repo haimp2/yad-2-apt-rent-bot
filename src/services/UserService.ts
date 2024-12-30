@@ -2,7 +2,7 @@ import { UserSubscriptionData } from 'src/database/models/subscription';
 import User, { UserStateStep } from '../database/models/user';
 import { Location } from './yad-2-service/typings';
 
-class UserService {
+export class UserService {
     async createUser(chatId: number) {
         User.create({ chatId });
     }

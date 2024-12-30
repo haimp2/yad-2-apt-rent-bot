@@ -90,28 +90,37 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
           ctx.reply(error.message);
           return;
         }
-        await UserService.updateUserState(ctx.from.id, 'rooms', { maxPrice });
+        await UserService.updateUserState(ctx.from.id, 'minRooms', { maxPrice });
         ctx.reply(`
-          הזן את מספר החדרים בדירה:
-          ניתן לבחור כמה אפשרויות ולהפריד בפסיק
-          לדוגמא: 2, 3.5, 4
+          הזן את מספר החדרים המינימלי בדירה:
           `);
         break;
-      case 'rooms':
-        let rooms: number[];
+      case 'minRooms':
+        let minRooms: number;
         try {
-          rooms = ctx.message.text.trim().split(',').map(room => Number(room));
-          rooms = [...new Set(rooms)];
-          if (rooms.some(room => isNaN(room))) {
-            throw new Error('מספר חדרים לא תקין');
-          }
-          rooms.forEach(room => validateRooms(room));
+          minRooms = Number(ctx.message.text);
+          validateRooms(minRooms);
         } catch (error) {
           logger.error(`Validation error for rooms: ${error.message}`);
           ctx.reply(error.message);
           return;
         }
-        await UserService.updateUserState(ctx.from.id, 'minSizeInMeter', { rooms });
+        await UserService.updateUserState(ctx.from.id, 'maxRooms', { minRooms });
+        ctx.reply(`
+          הזן את מספר החדרים המקסימלי בדירה:
+          `);
+        break;
+      case 'maxRooms':
+        let maxRooms: number;
+        try {
+          maxRooms = Number(ctx.message.text);
+          validateRooms(maxRooms, user.state.activeSubscriptionData.minRooms);
+        } catch (error) {
+          logger.error(`Validation error for rooms: ${error.message}`);
+          ctx.reply(error.message);
+          return;
+        }
+        await UserService.updateUserState(ctx.from.id, 'minSizeInMeter', { maxRooms });
         ctx.reply(`
           הזן את השטח המינימלי במ"ר:
           אם אין העדפה, השב ״איו״

@@ -53,4 +53,7 @@ logs/*
 log/*
 *.log
 *.cpuprofile
+
+# Environment
 .env
+.env.stream-service

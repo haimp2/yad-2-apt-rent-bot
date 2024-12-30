@@ -28,17 +28,17 @@ export const validatePrice = (price: number, minPrice?: number) => {
 
 }
 
-export const validateRooms = (rooms: number) => {
+export const validateRooms = (rooms: number, minRooms?: number) => {
     const roomsIsPositive = rooms > 0;
     const roomsIsNotTooHigh = rooms <= 10;
-    const isInStepsOfHalf = rooms % 0.5 === 0;
+    const roomsIsHigherThanMinRooms = minRooms !== undefined ? rooms >= minRooms : true;
 
     if (!roomsIsPositive) {
         throw new Error('מספר חדרים חייב להיות חיובי');
     } else if (!roomsIsNotTooHigh) {
         throw new Error('מספר חדרים גבוה מדי - המספר המקסימלי הוא 10');
-    } else if (!isInStepsOfHalf) {
-        throw new Error('מספר חדרים חייב להיות בצעדים של 0.5');
+    } else if (!roomsIsHigherThanMinRooms) {
+        throw new Error('מספר חדרים חייב להיות גבוה מהמספר המינימלי');
     }
 }
 

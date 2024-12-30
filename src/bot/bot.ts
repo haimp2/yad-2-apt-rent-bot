@@ -5,10 +5,10 @@ import checkAllowedUsers from './middleware/allowed-users';
 import createNewUserIfNotExist from './middleware/create-new-user';
 import maxSubscriptionLimit from './middleware/max-subscription-limit';
 
-const initializeBot = () => {
-    logger.info('Starting the bot...');
+export const bot = new Telegraf(process.env.BOT_TOKEN);
 
-    const bot = new Telegraf(process.env.BOT_TOKEN);
+export const initializeBot = () => {
+    logger.info('Starting the bot...');
 
     bot.telegram.setMyCommands([
         { command: 'start', description: 'התחל את הבוט' },
@@ -27,5 +27,3 @@ const initializeBot = () => {
         logger.info('Bot started');
     });
 };
-
-export default initializeBot;
