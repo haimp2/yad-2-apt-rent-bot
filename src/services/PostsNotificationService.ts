@@ -5,6 +5,7 @@ import { Yad2FeedItem } from './yad-2-service/typings';
 import { Yad2ApiService } from './yad-2-service/Yad2ApiService';
 import { bot } from '../bot/bot';
 import { escapeMarkdown } from '../bot/methods/subscription';
+import { DateTime } from 'luxon';
 
 const WORKER_INTERVAL = 1000 * 60 * 10; // 10 minutes
 
@@ -42,7 +43,9 @@ export class PostsNotificationService {
             try {
                 const posts = (await this.Yad2ApiService.fetchPosts(subscription))
                 const noneDemoPosts = this.filterOutDemoPosts(posts);
-                const noneCommercialPosts = this.filterOutCommercialPosts(noneDemoPosts);
+                // TODOL: Uncomment this line after the demo is done
+                // const noneCommercialPosts = this.filterOutCommercialPosts(noneDemoPosts);
+                const noneCommercialPosts = noneDemoPosts
                 const recentPosts = this.filterNoneRecentPosts(noneCommercialPosts);
                 const chatId = (<any>subscription.userId).chatId;
 
@@ -72,11 +75,12 @@ export class PostsNotificationService {
     }
 
     private filterNoneRecentPosts(posts: Yad2FeedItem[]) {
-        // TODOL Check if need to compare with UTC time
-        const currentDate = new Date();
-        const tenMinutesAgo = new Date(currentDate.getTime() - 10 * 60000);
-
-        return posts.filter(post => new Date(post.date_added) > tenMinutesAgo);
+        const currentDate = DateTime.utc();
+        const tenMinutesAgo = currentDate.minus({ minutes: 11 }).toJSDate();
+        return posts.filter(post => {
+            const date = DateTime.fromFormat(post.date_added, 'yyyy-MM-dd HH:mm:ss').toJSDate();
+            return date > tenMinutesAgo
+        });
     }
 
     private createPostMessage(post: Yad2FeedItem) {
