@@ -7,7 +7,11 @@ if (process.env.NODE_ENV === 'development') {
 
 async function connectDB() {
     try {
-        await mongoose.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`);
+        const [user, pass, host, db, cluster] = [process.env.MONGO_USER, process.env.MONGO_PASS, process.env.MONGO_HOST, process.env.MONGO_DB, process.env.MONGO_CLUSTER];
+
+        await mongoose.connect(`mongodb+srv://${user}:${pass}@${host}?retryWrites=true&w=majority&appName=${cluster}`, {
+            dbName: db,
+        });
         logger.info('Connected to MongoDB');
 
         mongoose.connection.on('disconnected', () => {

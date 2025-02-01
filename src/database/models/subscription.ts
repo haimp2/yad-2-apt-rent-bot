@@ -1,9 +1,10 @@
 
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 import { Location } from 'src/services/yad-2-service/typings';
 
 
 export interface UserSubscriptionData {
+    _id: Types.ObjectId,
     location?: Location;
     minPrice?: number;
     maxPrice?: number;
@@ -23,7 +24,7 @@ export const locationSchema = {
 export const subscriptionDataSchema = {
     location: {
         type: locationSchema,
-        required: true
+        required: false
     },
     minPrice: { type: Number },
     maxPrice: { type: Number },

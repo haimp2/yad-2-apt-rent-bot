@@ -1,14 +1,14 @@
 import { UserSubscriptionData } from 'src/database/models/subscription';
-import User, { UserStateStep } from '../database/models/user';
+import User, { UserDocument, UserStateStep } from '../database/models/user';
 import { Location } from './yad-2-service/typings';
 
 export class UserService {
-    async createUser(chatId: number) {
-        User.create({ chatId });
+    async createUser(chatId: number, firstName?: string, lastName?: string, username?: string) {
+        await User.create({ chatId, firstName, lastName, username });
     }
 
     async getUser(chatId: number) {
-        return User.findOne({ chatId }).lean();
+        return User.findOne({ chatId }).lean() as unknown as UserDocument;
     }
 
     async updateUserState(
