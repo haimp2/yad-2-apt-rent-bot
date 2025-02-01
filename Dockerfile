@@ -7,4 +7,4 @@ RUN npm install
 
 COPY . .
 
-CMD ["node", "src/dist/index.js"]
+CMD ["npm", "start"]
