@@ -4,23 +4,10 @@ services:
   bot:
     build:
       context: .
-    container_name: telegram_bot
+    container_name: telegram_rent_bot
     restart: always
     env_file: .env
-    depends_on:
-      - mongo
-    volumes:
-      - .:/app
     command: ['npm', 'start']
-
-  mongo:
-    image: mongo:5
-    container_name: mongo_db
-    restart: always
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo_data:/data/db
 
 volumes:
   mongo_data:
