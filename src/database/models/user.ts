@@ -7,6 +7,7 @@ export type UserStateStep = typeof userStateSteps[number];
 
 interface UserState {
     step: UserStateStep;
+    lastMessageId?: number;
     activeSubscriptionData: UserSubscriptionData;
     currentLocations: {
         id: number;
@@ -60,6 +61,10 @@ const userSchema = new Schema<UserDocument>({
             ...locationSchema,
             id: { type: Number, required: true }
         }],
+        lastMessageId: {
+            type: Number,
+            default: null,
+        },
     },
     maxSubscriptions: {
         type: Number,

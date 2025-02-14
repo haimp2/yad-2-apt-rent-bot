@@ -10,7 +10,7 @@ import logger from '../../utils/logger';
 
 const onUserSubscriptionEnd = async (ctx: Context, userId: Types.ObjectId, subscriptionData: UserSubscriptionData) => {
   logger.info(`Adding subscription for user ${userId}`, subscriptionData);
-  ctx.reply(generateSubscriptionMessage(subscriptionData), { parse_mode: 'MarkdownV2' });
+  ctx.reply(generateSubscriptionMessage(subscriptionData, true), { parse_mode: 'MarkdownV2' });
   SubscriptionService.subscribe(userId, subscriptionData);
   UserService.resetUserState(ctx.from.id);
 };
@@ -22,6 +22,8 @@ const registerNewSubscriptionHandler = async (bot: Telegraf<Context>) => {
       ברוכים הבאים לבוט חיפוש דירות של Yad2
       ניתן להפעיל את הבוט על ידי הקלדת הפקודות הבאות:
       /create_subscription - צור הרשמה חדשה לחיפוש דירה
+      /get_subscriptions - קבל את רשימת ההרשמות שלך
+      /cancel_subscription - בטל הרשמה לחיפוש רכב
       `);
   });
 

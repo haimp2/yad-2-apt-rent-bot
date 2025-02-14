@@ -36,8 +36,20 @@ export class UserService {
         return user.save();
     }
 
-    async resetUserState(chatId: number) {
-        return User.findOneAndUpdate({ chatId }, { state: { step: 'location', activeSubscriptionData: {} } }, { new: true });
+    async updateUserLastMessageId(chatId: number, lastMessageId: number) {
+        return User.findOneAndUpdate({ chatId }, { 'state.lastMessageId': lastMessageId });
+    }
+
+    async resetUserState(chatId: number, resetLastMessageId = false) {
+        const user = await this.getUser(chatId);
+        return User.findOneAndUpdate(
+            { chatId }, {
+            state: {
+                step: null,
+                activeSubscriptionData: {},
+                lastMessageId: resetLastMessageId ? null : user.state.lastMessageId
+            }
+        }, { new: true });
     }
 
     async setCurrentLocations(chatId: number, locations: Location[]) {
