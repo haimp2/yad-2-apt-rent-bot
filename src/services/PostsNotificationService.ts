@@ -84,18 +84,16 @@ export class PostsNotificationService {
     }
 
     private createPostMessage(post: Yad2FeedItem) {
-        // TODO: add more details to the message - link and photo
-        // TODO: change date format
         return escapeMarkdown(`
-        *דירה חדשה נמצאה!* ${post.img_url ? `[🏠](${post.img_url})\n` : ''}
-        *עיר:* ${post.city}
-        *שכונה:* ${post.neighborhood}
-        *כתובת:* ${post.street}
-        *מספר חדרים:* ${post.Rooms_text}
-        *גודל:* ${post.square_meters} מ״ר
-        *מחיר:* ${post.price}
-        *תאריך פרסום:* ${post.date_added}
-        [*למעבר למודעה*](https://www.yad2.co.il/realestate/item/${post.id})
+        *🏠 דירה חדשה נמצאה!* ${post.img_url ? `[🖼️](${post.img_url})\n` : ''}
+        *🌆 עיר:* ${post.city || 'לא צויין'}
+        *📍 שכונה:* ${post.neighborhood || 'לא צויין'}
+        *📮 כתובת:* ${post.street || 'לא צויין'}
+        *🚪 מספר חדרים:* ${post.Rooms_text || 'לא צויין'}
+        *📏 גודל:* ${post.square_meters ? `${post.square_meters} מ״ר` : 'לא צויין'}
+        *💰 מחיר:* ${post.price || 'לא צויין'}
+        *📅 תאריך פרסום:* ${DateTime.fromFormat(post.date_added, 'yyyy-MM-dd HH:mm:ss').setZone('Asia/Jerusalem').toFormat('dd/MM/yyyy HH:mm')}
+        [*🔗 למעבר למודעה*](https://www.yad2.co.il/realestate/item/${post.id})
         `);
     }
 }
