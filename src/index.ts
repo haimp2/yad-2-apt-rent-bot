@@ -14,7 +14,7 @@ import Yad2ApiService from './services/yad-2-service/Yad2ApiService';
         await connectDB();
         initializeBot();
         const postsNotificationService = new PostsNotificationService(UserService, SubscriptionService, Yad2ApiService);
-        await postsNotificationService.start();
+        // await postsNotificationService.start();
     } catch (error) {
         logger.error('Error starting the app:', error);
         process.exit(1);
