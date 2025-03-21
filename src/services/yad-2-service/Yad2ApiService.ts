@@ -53,7 +53,21 @@ export class Yad2ApiService {
 
     const url = `${baseUrl}?${queryParameters}`;
 
-    const response = await fetch(url);
+    const headers = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      'Accept': 'application/json, text/plain, */*',
+      'Accept-Language': 'en-US,en;q=0.9,he;q=0.8',
+      'Referer': 'https://www.yad2.co.il/realestate/rent',
+      'Origin': 'https://www.yad2.co.il',
+      'Connection': 'keep-alive',
+      'Sec-Fetch-Dest': 'empty',
+      'Sec-Fetch-Mode': 'cors',
+      'Sec-Fetch-Site': 'same-site',
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    };
+
+    const response = await fetch(url, { headers });
 
     const data: Yad2ApiResponse = await response.json();
     return data?.data?.feed?.feed_items || [];
