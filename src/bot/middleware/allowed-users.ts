@@ -2,7 +2,8 @@ import { Context } from 'telegraf';
 import logger from '../../utils/logger';
 
 const ALLOWED_CHAT_IDS = [
-    296200165
+    296200165,
+    6686838255
 ];
 
 const checkAllowedUsers = async (ctx: Context, next: () => void) => {
