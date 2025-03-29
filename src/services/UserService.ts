@@ -1,5 +1,5 @@
 import { UserSubscriptionData } from 'src/database/models/subscription';
-import User, { UserDocument, UserStateStep } from '../database/models/user';
+import User, { UserDocument, UserStateStep, userStateSteps } from '../database/models/user';
 import { Location } from './yad-2-service/typings';
 
 export class UserService {
@@ -45,7 +45,7 @@ export class UserService {
         return User.findOneAndUpdate(
             { chatId }, {
             state: {
-                step: null,
+                step: 'location',
                 activeSubscriptionData: {},
                 lastMessageId: resetLastMessageId ? null : user.state.lastMessageId
             }
